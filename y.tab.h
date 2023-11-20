@@ -41,63 +41,65 @@
    enum yytokentype {
      START_SPRINT = 258,
      END_SPRINT = 259,
-     IF = 260,
-     ELSE = 261,
-     FOR = 262,
-     SET = 263,
-     TO = 264,
-     FROM = 265,
-     IS = 266,
-     TASK = 267,
-     ADD = 268,
-     REMOVE = 269,
-     IN_TASKS_FROM = 270,
-     HAS_PRIORITY = 271,
-     TASK_OPTION = 272,
-     TASK_STATUS = 273,
-     IDENTIFIER_TYPE = 274,
-     DOT = 275,
-     COMMA = 276,
-     OPEN_PARENTHESIS = 277,
-     CLOSE_PARENTHESIS = 278,
-     OPEN_BRACES = 279,
-     CLOSE_BRACES = 280,
-     OPEN_BRACKETS = 281,
-     CLOSE_BRACKETS = 282,
-     STRING = 283,
-     NUMBER = 284,
-     IDENTIFIER = 285
+     NEWLINE = 260,
+     IF = 261,
+     ELSE = 262,
+     FOR = 263,
+     SET = 264,
+     TO = 265,
+     FROM = 266,
+     IS = 267,
+     TASK = 268,
+     ADD = 269,
+     REMOVE = 270,
+     IN_TASKS_FROM = 271,
+     HAS_PRIORITY = 272,
+     TASK_OPTION = 273,
+     TASK_STATUS = 274,
+     IDENTIFIER_TYPE = 275,
+     DOT = 276,
+     COMMA = 277,
+     OPEN_PARENTHESIS = 278,
+     CLOSE_PARENTHESIS = 279,
+     OPEN_BRACES = 280,
+     CLOSE_BRACES = 281,
+     OPEN_BRACKETS = 282,
+     CLOSE_BRACKETS = 283,
+     STRING = 284,
+     NUMBER = 285,
+     IDENTIFIER = 286
    };
 #endif
 /* Tokens.  */
 #define START_SPRINT 258
 #define END_SPRINT 259
-#define IF 260
-#define ELSE 261
-#define FOR 262
-#define SET 263
-#define TO 264
-#define FROM 265
-#define IS 266
-#define TASK 267
-#define ADD 268
-#define REMOVE 269
-#define IN_TASKS_FROM 270
-#define HAS_PRIORITY 271
-#define TASK_OPTION 272
-#define TASK_STATUS 273
-#define IDENTIFIER_TYPE 274
-#define DOT 275
-#define COMMA 276
-#define OPEN_PARENTHESIS 277
-#define CLOSE_PARENTHESIS 278
-#define OPEN_BRACES 279
-#define CLOSE_BRACES 280
-#define OPEN_BRACKETS 281
-#define CLOSE_BRACKETS 282
-#define STRING 283
-#define NUMBER 284
-#define IDENTIFIER 285
+#define NEWLINE 260
+#define IF 261
+#define ELSE 262
+#define FOR 263
+#define SET 264
+#define TO 265
+#define FROM 266
+#define IS 267
+#define TASK 268
+#define ADD 269
+#define REMOVE 270
+#define IN_TASKS_FROM 271
+#define HAS_PRIORITY 272
+#define TASK_OPTION 273
+#define TASK_STATUS 274
+#define IDENTIFIER_TYPE 275
+#define DOT 276
+#define COMMA 277
+#define OPEN_PARENTHESIS 278
+#define CLOSE_PARENTHESIS 279
+#define OPEN_BRACES 280
+#define CLOSE_BRACES 281
+#define OPEN_BRACKETS 282
+#define CLOSE_BRACKETS 283
+#define STRING 284
+#define NUMBER 285
+#define IDENTIFIER 286
 
 
 

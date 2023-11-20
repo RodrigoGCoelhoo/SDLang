@@ -8,6 +8,7 @@ int yylex(void);
 
 %token START_SPRINT
 %token END_SPRINT
+%token NEWLINE
 %token IF
 %token ELSE
 %token FOR

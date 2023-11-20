@@ -1,7 +1,7 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "f1.tab.h"
+#include "y.tab.h"
 extern int yywrap();
 int is_identified = 0;
 %}
