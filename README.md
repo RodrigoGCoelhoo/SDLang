@@ -5,43 +5,43 @@ StartupDayLang is a language developed to analyse the day of multiple squads ins
 ## EBNF
 
 ```
-PROGRAM = (DAY, "/", MONTH, "/", YEAR), BLOCK, "end";
+STRUCTURE = "START_SPRINT", PROGRAM , "END_SPRINT"
 
-BLOCK = "{", { STATEMENT, "," }, "}";
+PROGRAM = { STATEMENT }
 
-EMPLOYEE_STATEMENT = "for", EMPLOYEE, "in", SQUAD;
+STATEMENT = CONDITIONAL | LOOP | CHANGE_STATUS | NEW_TASK | LINK | ASSIGNMENT
 
-FUNCTIONS_DECLARATION = "IDENTIFIER(ARGUMENT, { ARGUMENT }) {TASKS_STATEMENTS};"
+BLOCK = "{", { STATEMENT }, "}";
 
-ARGUMENT = IDENTIFIER | DIGIT | BOOLEAN | ANY;
+CONDITIONAL = "if", "(" BOOLEAN_EXPRESSION, [{"and" | "or", BOOLEAN_EXPRESSION}] ")", BLOCK, [ "else", "{", BLOCK, "}," ];
 
-CONDITIONAL = "if", "(" BOOLEAN_EXPRESSION, ")", "{", BLOCK, "},", [ "else", "{", BLOCK, "}," ];
+LOOP = "for", IDENTIFIER, "in tasks from", IDENTIFIER, BLOCK
 
-VARIABLES_DECLARATION = IDENTIFIER, ":", IDENTIFIER_TYPE, "is a", EMPLOYEE_ROLE, "part of", IDENTIFIER;
+CHANGE_STATUS = "set", STRING, "from", IDENTIFIER, "to", TASK_STATUS
 
-DAY = DIGIT, { DIGIT };
+NEW_TASK = "task", STRING, "to", IDENTIFIER, "is", TASK_STATUS, "has priority", NUMBER
 
-MONTH = DIGIT, { DIGIT };
+LINK = IDENTIFIER, "add" | "remove", IDENTIFIER
 
-YEAR = DIGIT, DIGIT, DIGIT, DIGIT;
+ASSIGNMENT = IDENTIFIER_TYPE, IDENTIFIER
 
-BOOLEAN_EXPRESSION = IDENTIFIER, ("==", | "!=", | ">", | "<", | ">=", | "<="), IDENTIFIER;
+TASK_PROP = IDENTIFIER, ".", TASK_OPTION
 
-ARITHMETIC_EXPRESSION = EXPRESSION, ("+", | "-", | "*", | "/"), EXPRESSION;
+TASK_OPTION = ( "name" | "owner" | "status", "priority")
+
+BOOLEAN_EXPRESSION = TASK_PROP | NUMBER, ("==", | "!=", "<", ">" , "<=" , ">=" ), STRING | TASK_STATUS | NUMBER;
 
 IDENTIFIER = LETTER, { LETTER | DIGIT | "_" };
 
-TASK_TYPE = ( "development" | "management" | "design" | "test" | "sales" );
-
-EMPLOYEE_ROLE = ( "developer" | "manager" | "designer" | "tester" | "seller" );
-
 TASK_STATUS = ( "to-do" | "doing" | "done" );
 
-IDENTIFIER_TYPE = ( "squad" | "employee" | "company");
+IDENTIFIER_TYPE = ( "squad" | "employee");
 
-NUMBER = DIGIT, { DIGIT } ;
+NUMBER = DIGIT, { DIGIT }
 
 LETTER = ( a | ... | z | A | ... | Z ) ;
 
 DIGIT = ( 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 );
+
+STRING = '"', {LETTER}+, '"'
 ```

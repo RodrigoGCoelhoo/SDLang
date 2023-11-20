@@ -1,0 +1,114 @@
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int yyerror(char *s);
+int yylex(void);
+%}
+
+%token START_SPRINT
+%token END_SPRINT
+%token IF
+%token ELSE
+%token FOR
+%token SET
+%token TO
+%token FROM
+%token IS
+%token TASK
+%token ADD
+%token REMOVE
+%token IN_TASKS_FROM
+%token HAS_PRIORITY
+%token TASK_OPTION
+%token TASK_STATUS
+%token IDENTIFIER_TYPE
+%token DOT
+%token COMMA
+%token OPEN_PARENTHESIS
+%token CLOSE_PARENTHESIS
+%token OPEN_BRACES
+%token CLOSE_BRACES
+%token OPEN_BRACKETS
+%token CLOSE_BRACKETS
+%token STRING
+%token NUMBER
+%token IDENTIFIER
+
+%start STRUCTURE
+
+%%
+
+STRUCTURE:
+   START_SPRINT PROGRAM END_SPRINT { printf("Parsing complete.\n"); }
+   ;
+
+PROGRAM:
+   STATEMENTS
+   ;
+
+STATEMENTS:
+   STATEMENT
+   | STATEMENTS STATEMENT
+
+STATEMENT:
+   CONDITIONAL
+   | LOOP
+   | CHANGE_STATUS
+   | NEW_TASK
+   | LINK
+   | ASSIGNMENT
+   ;
+
+BLOCK:
+   OPEN_BRACES STATEMENTS CLOSE_BRACES
+   ;
+
+CONDITIONAL:
+   IF OPEN_PARENTHESIS BOOLEAN_EXPRESSION CLOSE_PARENTHESIS BLOCK | 
+   ELSE BLOCK
+   ;
+
+LOOP:
+   FOR IDENTIFIER IN_TASKS_FROM IDENTIFIER BLOCK
+   ;
+
+CHANGE_STATUS:
+   SET STRING FROM IDENTIFIER TO TASK_STATUS
+   ;
+
+NEW_TASK:
+   TASK STRING TO IDENTIFIER IS TASK_STATUS HAS_PRIORITY NUMBER
+   ;
+
+LINK:
+   IDENTIFIER ADD IDENTIFIER
+   | IDENTIFIER REMOVE IDENTIFIER
+   ;
+
+ASSIGNMENT:
+   IDENTIFIER_TYPE IDENTIFIER
+   ;
+
+TASK_PROP:
+   IDENTIFIER DOT TASK_OPTION
+   ;
+
+BOOLEAN_EXPRESSION:
+   TASK_PROP
+   | NUMBER
+   | STRING
+   | TASK_STATUS
+   ;
+
+%%
+
+int main() {
+   yyparse();
+   return 0;
+}
+
+int yyerror(char *s) {
+   fprintf(stderr, "Error: %s\n", s);
+   return 0;
+}
