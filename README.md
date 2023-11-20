@@ -45,3 +45,60 @@ DIGIT = ( 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 );
 
 STRING = '"', {LETTER}+, '"'
 ```
+
+## Example
+
+```
+START_SPRINT
+
+# Entities
+
+squad Website
+squad AI
+
+employee Rodrigo
+employee Joao
+employee Marcos
+employee Pedro
+
+
+# Link employee to squad
+
+Website add Rodrigo
+Website add Joao
+
+AI add Rodrigo
+AI add Marcos
+AI add Pedro
+AI remove Rodrigo
+
+
+# Tasks
+
+task "Start front-page" to Rodrigo is "to-do"
+task "Start backend" to Joao is "to-do"
+
+task "Create model" to Marcos is "to-do"
+task "Clean data" to Pedro is "to-do"
+
+
+# Status
+set "Develop front-page" from Rodrigo to "done"
+set "Develop backend" from Joao to "doing"
+
+
+# Loop and conditional
+for task in tasks from Rodrigo {
+  if (task.name == "Develop front-page") {
+    if (task.status == "done") {
+      print(task.owner + " ended " + task.name)
+      task "Deploy website" to Rodrigo is "to-do"
+    }
+    else {
+      print(task.owner + " is late on " + task.name)
+    }
+  }
+}
+
+END_SPRINT
+```
