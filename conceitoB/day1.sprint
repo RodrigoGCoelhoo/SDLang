@@ -24,27 +24,24 @@ AI remove Rodrigo
 
 // Tasks
 
-task "Start front-page" to Rodrigo is "to-do"
-task "Start backend" to Joao is "to-do"
+task "Start front-page" to Rodrigo on Website is "TODO"
+task "Start backend" to Joao on Website is "TODO"
 
-task "Create model" to Marcos is "to-do"
-task "Clean data" to Pedro is "to-do"
+task "Create model" to Marcos on AI is "TODO"
+task "Clean data" to Pedro on AI is "TODO"
 
 
 // Status
-set "Develop front-page" from Rodrigo to "done"
-set "Develop backend" from Joao to "doing"
+set "Start front-page" from Rodrigo on Website to "DONE"
+set "Start backend" from Joao on Website to "DOING"
 
 
 // Loop and conditional
 for t in tasks from Rodrigo {
   if (t.name == "Develop front-page") {
-    if (t.status == "done") {
-      print(t.owner + " ended " + t.name)
-      task "Deploy website" to Rodrigo is "to-do"
-    }
-    else {
-      print(t.owner + " is late on " + t.name)
+    if (t.status == "DONE") {
+      print(t.owner + " ended '" + t.name + "'")
+      task "Deploy website" to Rodrigo on Website is "TODO"
     }
   }
 }

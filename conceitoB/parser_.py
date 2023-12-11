@@ -87,6 +87,14 @@ class Parser:
         if tokenizer.next.type == "IDEN":
             v = tokenizer.next.value
             tokenizer.select_next()
+            if tokenizer.next.type == "PROP":
+                tokenizer.select_next()
+                if tokenizer.next.type == "IDEN":
+                    v2 = tokenizer.next.value
+                    tokenizer.select_next()
+                    return PropVal(tokenizer.next.type, [v, v2])
+                else:
+                    raise "Error: no identifier after '.'"
             return IdenVal(v, [])
         
         elif tokenizer.next.type == "PLUS":
@@ -145,7 +153,7 @@ class Parser:
         
     def parse_expression(tokenizer):
         c1 = Parser.parse_term(tokenizer)
-        while tokenizer.next.type in ["PLUS", "MINUS", "CONCAT"]:
+        while tokenizer.next.type in ["PLUS", "MINUS"]:
             op = tokenizer.next.type
             tokenizer.select_next()
 
@@ -153,8 +161,8 @@ class Parser:
             c1 = BinOp(op, [c1, c2])
         return c1
     
-    def parse_assign(tokenizer):
-        print("REMOVER PARSE ASSIGN")
+    # def parse_assign(tokenizer):
+    #     print("REMOVER PARSE ASSIGN")
         # c1 = IdenVal(tokenizer.next.value, [])
         # tokenizer.select_next()
         # if tokenizer.next.type != "ASSIGN":
@@ -164,7 +172,7 @@ class Parser:
         # return AssignVal("IDEN", [c1, c2])
     
     def parse_statement(tokenizer):
-        print(tokenizer.next.type, tokenizer.next.value)
+        # print(tokenizer.next.type, tokenizer.next.value)
         if tokenizer.next.type == "STMT":
             tokenizer.select_next()
             return NoOp(0, [])
@@ -184,7 +192,7 @@ class Parser:
             tokenizer.select_next()
             if tokenizer.next.type != "IDEN":
                 raise "Error: no identifier for squad"
-            c1 = SquadVal("SQUAD", tokenizer.next.value)
+            c1 = SquadVal("SQUAD", [tokenizer.next.value])
             tokenizer.select_next()
             return c1
 
@@ -192,7 +200,7 @@ class Parser:
             tokenizer.select_next()
             if tokenizer.next.type != "IDEN":
                 raise "Error: no identifier for employee"
-            c1 = EmployeeVal("EMPLOYEE", tokenizer.next.value)
+            c1 = EmployeeVal("EMPLOYEE", [tokenizer.next.value])
             tokenizer.select_next()
             return c1
         
@@ -217,35 +225,61 @@ class Parser:
             if tokenizer.next.type != "STRING":
                 raise "Error: no string after task"
             task_name = tokenizer.next.value
+
             tokenizer.select_next()
             if tokenizer.next.type != "TO":
                 raise "Error: no to after string"
+            
             tokenizer.select_next()
             if tokenizer.next.type != "IDEN":
                 raise "Error: no identifier after to"
             employee = tokenizer.next.value
+
+            tokenizer.select_next()
+            if tokenizer.next.type != "ON":
+                raise "Error: no on after identifier"
+            
+            tokenizer.select_next()
+            if tokenizer.next.type != "IDEN":
+                raise "Error: no identifier after on"
+            squad_name = tokenizer.next.value
+
             tokenizer.select_next()
             if tokenizer.next.type != "IS":
                 raise "Error: no is after identifier"
+            
             tokenizer.select_next()
             if tokenizer.next.type != "STRING":
                 raise "Error: no string after is"
             task_status = tokenizer.next.value
+
             tokenizer.select_next()
-            return CreateTaskVal("NEW_TASK", [task_name, employee, task_status])
+            return CreateTaskVal("NEW_TASK", [task_name, employee, squad_name, task_status])
         
         elif tokenizer.next.type == "SET":
             tokenizer.select_next()
             if tokenizer.next.type != "STRING":
                 raise "Error: no string after task"
             task_name = tokenizer.next.value
+            
             tokenizer.select_next()
             if tokenizer.next.type != "FROM":
                 raise "Error: no from after string"
+            
             tokenizer.select_next()
             if tokenizer.next.type != "IDEN":
                 raise "Error: no identifier after from"
             employee = tokenizer.next.value
+
+            tokenizer.select_next()
+            if tokenizer.next.type != "ON":
+                raise "Error: no on after identifier"
+            
+            tokenizer.select_next()
+            if tokenizer.next.type != "IDEN":
+                raise "Error: no identifier after on"
+            squad_name = tokenizer.next.value
+
             tokenizer.select_next()
             if tokenizer.next.type != "TO":
                 raise "Error: no to after identifier"
@@ -254,25 +288,7 @@ class Parser:
                 raise "Error: no string after to"
             task_status = tokenizer.next.value
             tokenizer.select_next()
-            return UpdateTaskVal("NEW_TASK", [task_name, employee, task_status])
-        
-        elif tokenizer.next.type == "VAR":
-            tokenizer.select_next()
-            if tokenizer.next.type != "IDEN":
-                raise "Error: no variable name"
-            c1 = IdenVal(tokenizer.next.value, [])
-            tokenizer.select_next()
-            if tokenizer.next.type != "TYPE":
-                raise "Error: missing variable type"
-            type_ = tokenizer.next.value
-            tokenizer.select_next()
-            if tokenizer.next.type != "ASSIGN":
-                return VarDec(type_, [c1, None])
-            else:
-                tokenizer.select_next()
-                c2 = Parser.parse_bool_expression(tokenizer)
-                return VarDec(type_, [c1, c2])
-
+            return UpdateTaskVal("NEW_TASK", [task_name, employee, squad_name, task_status])
                     
         elif tokenizer.next.type == "IF":
             tokenizer.select_next()
@@ -292,24 +308,34 @@ class Parser:
         
         elif tokenizer.next.type == "FOR":
             tokenizer.select_next()
-            init = Parser.parse_assign(tokenizer)
-            if tokenizer.next.type != 'SEMI_COLON':
-                raise "Error: missing ';' on for loop (1)"
-            
-            tokenizer.select_next()
-            condition = Parser.parse_bool_expression(tokenizer)
 
-            if tokenizer.next.type != 'SEMI_COLON':
-                raise "Error: missing ';' on for loop (2)"
-            
+            if tokenizer.next.type != "IDEN":
+                raise "Error: no identifier after for"
+            task_var = tokenizer.next.value
             tokenizer.select_next()
-            increment = Parser.parse_assign(tokenizer)
+
+            if tokenizer.next.type != "IN":
+                raise "Error: no in after identifier"
+            tokenizer.select_next()
+
+            if tokenizer.next.type != "TASKS":
+                raise "Error: no tasks after in"
+            tokenizer.select_next()
+
+            if tokenizer.next.type != "FROM":
+                raise "Error: no from after task"
+            tokenizer.select_next()
+
+            if tokenizer.next.type != "IDEN":
+                raise "Error: no identifier after from"
+            employee = tokenizer.next.value
+
+            tokenizer.select_next()
 
             block = Parser.parse_block(tokenizer)
-
             tokenizer.select_next()
 
-            return ForVal("FOR", [init, condition, increment, block])
+            return ForVal("FOR", [task_var, employee, block])
         
         else:
             raise "Error: edge case Parse Statement"
@@ -337,7 +363,7 @@ class Parser:
         if(tokenizer.next.type != "START_SPRINT"):
                 raise "Error: no START_SPRINT"
         tokenizer.select_next()
-        while tokenizer.next.type != "EOF":            
+        while tokenizer.next.type != "END_SPRINT":            
             c = Parser.parse_statement(tokenizer)
             block.children.append(c)
         return block
@@ -352,6 +378,6 @@ class Parser:
 
         tree = Parser.parse_program(tokenizer)
 
-        if tokenizer.next.type != "EOF":
-            raise "Error: no EOF"
+        if tokenizer.next.type != "END_SPRINT":
+            raise "Error: no END_SPRINT"
         return tree

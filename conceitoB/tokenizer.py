@@ -134,7 +134,7 @@ class Tokenizer:
             type_ = "DIV"
             value = element
         elif element == ".":
-            type_ = "CONCAT"
+            type_ = "PROP"
             value = element
         elif element == "(":
             type_ = "OPEN_P"
@@ -165,7 +165,7 @@ class Tokenizer:
             value = element
         else:
             raise "Error: unidentified symbol"
-        print("type", type_, "value", value)
+        # print("type", type_, "value", value)
 
         self.next = Token(type_, value)
         self.position += 1

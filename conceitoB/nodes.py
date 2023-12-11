@@ -5,6 +5,25 @@
 # }}
 
 symbol_table = {}
+squads_table={}
+employee_array=[]
+temp_table = {}
+
+temp_var = ""
+current_task = {}
+
+# Squads table
+# {
+#     "squad_name": {
+#         "employees": [],
+#         "tasks": {
+#             "task_name": {
+#                 "status": "status",
+#                 "owner": "owner",
+#             }
+#         }
+#     }
+# }
 
 class Node:
     def __init__(self, value: int, children: list):
@@ -71,11 +90,6 @@ class BinOp(Node):
             t = "int"
             if c1_t != c2_t:
                 raise "Error: invalid comparison"
-
-        # Concat
-        elif self.value == "CONCAT":
-            res = str(c1) + str(c2)
-            t = "str"
         
         if res != None:
             if res == True:
@@ -83,8 +97,6 @@ class BinOp(Node):
             if res == False:
                 res = 0
             return (res, t)
-        
-        print("Aqui: ", self.value, c1, c2)
          
         raise "Edge case 'Evaluate BinOp'"
 
@@ -149,15 +161,33 @@ class ForVal(Node):
         super().__init__(value, children)
 
     def Evaluate(self):
-        init = self.children[0]
-        condition = self.children[1]
-        increment = self.children[2]
-        block = self.children[3]
+        global current_task
+        global temp_var
+        task_var = self.children[0]
+        employee = self.children[1]
+        block = self.children[2]
 
-        init.Evaluate()
-        while condition.Evaluate()[0]:
+        # print("ForVal: ", task_var, employee)
+ 
+        temp_var = task_var
+
+        if task_var in temp_table.keys():
+            raise "Error: variable already declared"
+        if employee not in employee_array:
+            raise "Error: employee not declared"
+        
+        employee_tasks = []
+        for squad_items in squads_table.values():
+            for task in squad_items["tasks"].values():
+                if task["owner"] == employee:
+                    employee_tasks.append(task)
+
+        # print("Employee tasks: ", employee_tasks)
+        for task in employee_tasks:
+            current_task = task
             block.Evaluate()
-            increment.Evaluate()
+        
+
 
 class IdenVal(Node):
     def __init__(self, value, children):
@@ -231,45 +261,112 @@ class SquadVal(Node):
         super().__init__(value, children)
 
     def Evaluate(self):
-        
-        print("SquadVal: ", self.value)
+        squad_name = self.children[0]
+        if squad_name in squads_table.keys():
+            raise "Error: squad already declared"
+        squads_table[squad_name] = {"employees": [], "tasks": {}}
+        # print("SquadVal: ", squad_name)
 
 class EmployeeVal(Node):
     def __init__(self, value, children):
         super().__init__(value, children)
 
     def Evaluate(self):
-        
-        print("EmployeeVal: ", self.value)
+        employee_name = self.children[0]
+        if employee_name in employee_array:
+            raise "Error: employee already declared"
+        employee_array.append(employee_name)
+        # print("EmployeeVal: ", employee_name)
 
 class AddVal(Node):
     def __init__(self, value, children):
         super().__init__(value, children)
 
     def Evaluate(self):
+        squad_name = self.children[0]
+        employee_name = self.children[1]
+
+        if squad_name not in squads_table.keys():
+            raise "Error: squad not declared"
+        if employee_name not in employee_array:
+            raise "Error: employee not declared"
+        squads_table[squad_name]["employees"].append(employee_name)
         
-        print("AddVal: ", self.value)
+        # print("AddVal: ", squad_name, employee_name)
 
 class RemoveVal(Node):
     def __init__(self, value, children):
         super().__init__(value, children)
 
     def Evaluate(self):
-        
-        print("RemoveVal: ", self.value)
+        squad_name = self.children[0]
+        employee_name = self.children[1]
+
+        if squad_name not in squads_table.keys():
+            raise "Error: squad not declared"
+        if employee_name not in employee_array:
+            raise "Error: employee not declared"
+        squads_table[squad_name]["employees"].remove(employee_name)
+
+        # print("RemoveVal: ", squad_name, employee_name)
 
 class CreateTaskVal(Node):
     def __init__(self, value, children):
         super().__init__(value, children)
 
     def Evaluate(self):
+        task_name = self.children[0]
+        employee_name = self.children[1]
+        squad_name = self.children[2]
+        task_status = self.children[3]
+
+        if employee_name not in employee_array:
+            raise "Error: employee not declared"
+        if employee_name not in squads_table[squad_name]["employees"]:
+            raise "Error: employee not in squad"
+        if task_status not in ["TODO", "DOING", "DONE"]:
+            raise "Error: invalid task status"
+        if task_name in squads_table[squad_name]["tasks"].keys():
+            raise "Error: task already declared"
+
+        squads_table[squad_name]["tasks"][task_name] = {"status": task_status, "owner": employee_name, "name": task_name}
         
-        print("CreateTaskVal: ", self.value)
+        # print("CreateTaskVal: ", task_name, employee_name, squad_name, task_status)
 
 class UpdateTaskVal(Node):
     def __init__(self, value, children):
         super().__init__(value, children)
 
     def Evaluate(self):
+        task_name = self.children[0]
+        employee_name = self.children[1]
+        squad_name = self.children[2]
+        task_status = self.children[3]
+
+        if employee_name not in employee_array:
+            raise "Error: employee not declared"
+        if employee_name not in squads_table[squad_name]["employees"]:
+            raise "Error: employee not in squad"
+        if task_status not in ["TODO", "DOING", "DONE"]:
+            raise "Error: invalid task status"
+        if task_name not in squads_table[squad_name]["tasks"].keys():
+            raise "Error: task not declared"
         
-        print("CreateTaskVal: ", self.value)
+        squads_table[squad_name]["tasks"][task_name] = {"status": task_status, "owner": employee_name, "name": task_name}
+        
+        # print("CreateTaskVal: ", task_name, employee_name, squad_name, task_status)
+
+class PropVal(Node):
+    def __init__(self, value, children):
+        super().__init__(value, children)
+
+    def Evaluate(self):
+        temp_var_local = self.children[0]
+        prop = self.children[1]
+
+        if temp_var_local != temp_var:
+            raise "Error: variable not declared"
+        if prop not in ["status", "owner", "name"]:
+            raise "Error: invalid property"
+        
+        return (current_task[prop], "string")
