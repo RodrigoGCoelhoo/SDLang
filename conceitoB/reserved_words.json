@@ -1,0 +1,18 @@
+{
+  "print": "PRINT",
+  "squad": "SQUAD",
+  "employee": "EMPLOYEE",
+  "add": "ADD",
+  "remove": "REMOVE",
+  "task": "TASK",
+  "to": "TO",
+  "is": "IS",
+  "set": "SET",
+  "from": "FROM",
+  "for": "FOR",
+  "in": "IN",
+  "if": "IF",
+  "else": "ELSE",
+  "END_SPRINT": "END_SPRINT",
+  "START_SPRINT": "START_SPRINT"
+}
