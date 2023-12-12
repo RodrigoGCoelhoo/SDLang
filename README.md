@@ -3,7 +3,7 @@ Author: Rodrigo Guimarães Coelho
 
 Sprint is a language developed to manage the day of multiple squads inside a Startup. With this language you can create squads, add employees, create tasks and trigger new tasks based on task states.
 
-[Presentation](https://www.canva.com/design/DAF2wo-a-M8/EI4QroQKJXPqn08d_lG5IQ/view?utm_content=DAF2wo-a-M8&utm_campaign=designshare&utm_medium=link&utm_source=editor#8)
+[Presentation](https://www.canva.com/design/DAF2wo-a-M8/EI4QroQKJXPqn08d_lG5IQ/view?utm_content=DAF2wo-a-M8&utm_campaign=designshare&utm_medium=link&utm_source=editor#1)
 
 ## Summary
 1. [EBNF](#ebnf)
