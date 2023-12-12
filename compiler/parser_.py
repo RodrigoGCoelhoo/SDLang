@@ -361,7 +361,9 @@ class Parser:
     def parse_program(tokenizer):
         block = BlockVal("BLOCK", [])
         if(tokenizer.next.type != "START_SPRINT"):
-                raise "Error: no START_SPRINT"
+            raise "Error: no START_SPRINT"
+        if VERBOSE_MODE:
+            print("Sprint started\n")
         tokenizer.select_next()
         while tokenizer.next.type != "END_SPRINT":            
             c = Parser.parse_statement(tokenizer)
@@ -380,4 +382,5 @@ class Parser:
 
         if tokenizer.next.type != "END_SPRINT":
             raise "Error: no END_SPRINT"
+    
         return tree

@@ -36,7 +36,7 @@ set "Start front-page" from Rodrigo on Website to "DONE"
 set "Start backend" from Joao on Website to "DOING"
 
 
-// Loop and conditional
+// Loop
 for t in tasks from Rodrigo {
   if (t.name == "Develop front-page") {
     if (t.status == "DONE") {

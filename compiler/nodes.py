@@ -1,17 +1,19 @@
+from main import *
+
+
+
+symbol_table = {}
 # Symbol table
 # {x: {
 #    value: 1,
 #    type: int
 # }}
 
-symbol_table = {}
 squads_table={}
 employee_array=[]
-temp_table = {}
-
 temp_var = ""
-current_task = {}
 
+current_task = {}
 # Squads table
 # {
 #     "squad_name": {
@@ -171,8 +173,6 @@ class ForVal(Node):
  
         temp_var = task_var
 
-        if task_var in temp_table.keys():
-            raise "Error: variable already declared"
         if employee not in employee_array:
             raise "Error: employee not declared"
         
@@ -265,7 +265,8 @@ class SquadVal(Node):
         if squad_name in squads_table.keys():
             raise "Error: squad already declared"
         squads_table[squad_name] = {"employees": [], "tasks": {}}
-        # print("SquadVal: ", squad_name)
+        if VERBOSE_MODE:
+            print(f"Created squad '{squad_name}'")
 
 class EmployeeVal(Node):
     def __init__(self, value, children):
@@ -276,7 +277,8 @@ class EmployeeVal(Node):
         if employee_name in employee_array:
             raise "Error: employee already declared"
         employee_array.append(employee_name)
-        # print("EmployeeVal: ", employee_name)
+        if VERBOSE_MODE:
+            print(f"Created employee '{employee_name}'")
 
 class AddVal(Node):
     def __init__(self, value, children):
@@ -292,7 +294,8 @@ class AddVal(Node):
             raise "Error: employee not declared"
         squads_table[squad_name]["employees"].append(employee_name)
         
-        # print("AddVal: ", squad_name, employee_name)
+        if VERBOSE_MODE:
+            print(f"Added employee '{employee_name}' to squad '{squad_name}'")
 
 class RemoveVal(Node):
     def __init__(self, value, children):
@@ -308,7 +311,8 @@ class RemoveVal(Node):
             raise "Error: employee not declared"
         squads_table[squad_name]["employees"].remove(employee_name)
 
-        # print("RemoveVal: ", squad_name, employee_name)
+        if VERBOSE_MODE:
+            print(f"Removed employee '{employee_name}' from squad '{squad_name}'")
 
 class CreateTaskVal(Node):
     def __init__(self, value, children):
@@ -331,7 +335,8 @@ class CreateTaskVal(Node):
 
         squads_table[squad_name]["tasks"][task_name] = {"status": task_status, "owner": employee_name, "name": task_name}
         
-        # print("CreateTaskVal: ", task_name, employee_name, squad_name, task_status)
+        if VERBOSE_MODE:
+            print(f"Created task '{task_name}' for employee '{employee_name}' in squad '{squad_name}' with status '{task_status}'")
 
 class UpdateTaskVal(Node):
     def __init__(self, value, children):
@@ -354,7 +359,8 @@ class UpdateTaskVal(Node):
         
         squads_table[squad_name]["tasks"][task_name] = {"status": task_status, "owner": employee_name, "name": task_name}
         
-        # print("CreateTaskVal: ", task_name, employee_name, squad_name, task_status)
+        if VERBOSE_MODE:
+            print(f"Updated task '{task_name}' from '{employee_name}' in squad '{squad_name}' to status '{task_status}'")
 
 class PropVal(Node):
     def __init__(self, value, children):
