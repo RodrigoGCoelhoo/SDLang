@@ -113,7 +113,7 @@ END_SPRINT
 
 ## How to run it?
 1. Create a file with extension ```.sprint``` inside ```compiler``` folder
-2. Run:
+2. Run inside ```compiler``` folder:
 ```
   python main.py ./[YOUR_FILE_NAME].sprint
 ```
